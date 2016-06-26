@@ -49,11 +49,28 @@ class GamesController < ApplicationController
       )
     end
 
-    if @answer_is_correct && !@game.finished?
-      redirect_to game_path(@game)
-    else
-      redirect_to user_path(current_user)
+    # if @answer_is_correct && !@game.finished?
+    #   redirect_to game_path(@game)
+    # else
+    #   redirect_to user_path(current_user)
+    # end
+
+    # Выбираем поведение в зависимости от формата запроса
+    respond_to do |format|
+      # Если это html-запрос, по-старинке редиректим пользователя в зависимости от ситуации
+      format.html do
+        if @answer_is_correct && !@game.finished?
+          redirect_to game_path(@game)
+        else
+          redirect_to user_path(current_user)
+        end
+      end
+
+      # Если это js-запрос, то ничего не делаем и контролл попытается отрисовать шаблон
+      # <controller>/<action>.<format>.erb (в нашем случае games/answer.js.erb)
+      format.js {}
     end
+
   end
 
 
