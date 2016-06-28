@@ -37,6 +37,28 @@ RSpec.describe Game, type: :model do
     end
   end
 
+  # тесты на основные методы доступа к состоянию
+  context 'game state' do
+
+    # предыдущий уровень
+    it 'correct previous_level' do
+      expect(game_w_questions.previous_level).to eq(game_w_questions.current_level - 1)
+    end
+
+    # текущий, еще неотвеченный вопрос игры
+    it 'correct current_game_question' do
+      expect(game_w_questions.current_game_question).to eq(game_w_questions.game_questions[game_w_questions.current_level])
+    end
+
+    # последний отвеченный вопрос игры
+    it 'correct previous_game_question' do
+      if game_w_questions.previous_level == -1
+        expect(game_w_questions.previous_game_question).to eq(nil) # т.к. начало игры
+      else
+        expect(game_w_questions.previous_game_question).to eq(game_w_questions.game_questions[game_w_questions.previous_level])
+      end
+    end
+  end
 
 
   # тесты на основную игровую логику
