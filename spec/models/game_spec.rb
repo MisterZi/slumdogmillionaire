@@ -67,21 +67,23 @@ RSpec.describe Game, type: :model do
     # тесты на метод проверки правильных ответов
     context 'correct .answer_current_question!' do
 
+      let(:q) { game_w_questions.current_game_question.correct_answer_key }
+
       # ответ дан после истечения времени
       it 'time_out' do
         game_w_questions.created_at = Time.now - 1.hour
-        expect(game_w_questions.answer_current_question!(game_w_questions.current_game_question.correct_answer_key)).to be_falsey
+        expect(game_w_questions.answer_current_question!(q)).to be_falsey
       end
 
       # ответ дан верный
       it 'answer_correct' do
-        expect(game_w_questions.answer_current_question!(game_w_questions.current_game_question.correct_answer_key)).to be_truthy
+        expect(game_w_questions.answer_current_question!(q)).to be_truthy
       end
 
       # ответ дан последний(на миллион)
       it 'answer_correct last' do
         game_w_questions.current_level = Question::QUESTION_LEVELS.max
-        expect(game_w_questions.answer_current_question!(game_w_questions.current_game_question.correct_answer_key)).to be_truthy
+        expect(game_w_questions.answer_current_question!(q)).to be_truthy
         expect(game_w_questions.status).to eq(:won)
       end
 

@@ -49,12 +49,6 @@ class GamesController < ApplicationController
       )
     end
 
-    # if @answer_is_correct && !@game.finished?
-    #   redirect_to game_path(@game)
-    # else
-    #   redirect_to user_path(current_user)
-    # end
-
     # Выбираем поведение в зависимости от формата запроса
     respond_to do |format|
       # Если это html-запрос, по-старинке редиректим пользователя в зависимости от ситуации
