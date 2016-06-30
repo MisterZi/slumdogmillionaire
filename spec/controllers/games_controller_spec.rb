@@ -161,7 +161,18 @@ RSpec.describe GamesController, type: :controller do
       # и редирект на страницу старой игры
       expect(response).to redirect_to(game_path(game_w_questions))
       expect(flash[:alert]).to be
+    end
 
+    # юзер неправильно отвечает на вопрос
+    it 'incorrect answer' do
+      put :answer, id: game_w_questions.id, letter: 'incorrect answer!'
+
+      game = assigns(:game)
+      expect(game.finished?).to be_truthy
+      expect(game.status).to eq(:fail)
+
+      expect(response).to redirect_to(user_path(user))
+      expect(flash[:alert]).to be
     end
   end
 end
