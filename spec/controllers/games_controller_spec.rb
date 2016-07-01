@@ -116,7 +116,7 @@ RSpec.describe GamesController, type: :controller do
       expect(game_w_questions.current_game_question.help_hash[:audience_help]).not_to be
       expect(game_w_questions.audience_help_used).to be_falsey
 
-      # фигачим запрос в контроллен с нужным типом
+      # фигачим запрос в контроллер с нужным типом
       put :help, id: game_w_questions.id, help_type: :audience_help
       game = assigns(:game)
 
@@ -125,6 +125,22 @@ RSpec.describe GamesController, type: :controller do
       expect(game.audience_help_used).to be_truthy
       expect(game.current_game_question.help_hash[:audience_help]).to be
       expect(game.current_game_question.help_hash[:audience_help].keys).to contain_exactly('a', 'b', 'c', 'd')
+      expect(response).to redirect_to(game_path(game))
+    end
+
+    # тест на отработку "50/50"
+    it 'uses 50/50 help' do
+      expect(game_w_questions.current_game_question.help_hash[:fifty_fifty]).not_to be
+      expect(game_w_questions.fifty_fifty_used).to be_falsey
+
+      put :help, id: game_w_questions.id, help_type: :fifty_fifty
+      game = assigns(:game)
+
+      expect(game.finished?).to be_falsey
+      expect(game.fifty_fifty_used).to be_truthy
+      expect(game.current_game_question.help_hash[:fifty_fifty]).to be
+      expect(game.current_game_question.help_hash[:fifty_fifty].length).to eq(2)
+      expect(game.current_game_question.help_hash[:fifty_fifty]).to include('d')
       expect(response).to redirect_to(game_path(game))
     end
 
