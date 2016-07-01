@@ -181,7 +181,7 @@ RSpec.describe GamesController, type: :controller do
 
     # юзер неправильно отвечает на вопрос
     it 'incorrect answer' do
-      put :answer, id: game_w_questions.id, letter: 'incorrect answer!'
+      put :answer, id: game_w_questions.id, letter: 'a'
 
       game = assigns(:game)
       expect(game.finished?).to be_truthy
