@@ -30,7 +30,7 @@ RSpec.describe GamesController, type: :controller do
 
     # не может вызвать create
     it 'dont create' do
-      post :create, id: game_w_questions.id
+      post :create
 
       game = assigns(:game)
       expect(game).to be_nil
@@ -41,15 +41,16 @@ RSpec.describe GamesController, type: :controller do
 
     # не может вызвать help
     it 'dont help' do
-      put :help, id: game_w_questions.id
+      put :help, id: game_w_questions.id, help_type: :audience_help
 
+      expect(game_w_questions.current_game_question.help_hash.empty?).to be_truthy
       expect(response).to redirect_to(new_user_session_path)
       expect(flash[:alert]).to be
     end
 
     # не может вызвать answer
     it 'dont answer' do
-      put :answer, id: game_w_questions.id
+      put :answer, id: game_w_questions.id, letter: game_w_questions.game_questions.first.correct_answer_key
 
       expect(response).to redirect_to(new_user_session_path)
       expect(flash[:alert]).to be
@@ -57,7 +58,12 @@ RSpec.describe GamesController, type: :controller do
 
     # не может вызвать take_money
     it 'dont take_money' do
+      game_w_questions.update_attribute(:current_level, 2)
+
       put :take_money, id: game_w_questions.id
+
+      game = assigns(:game)
+      expect(game).to be_nil
 
       expect(response).to redirect_to(new_user_session_path)
       expect(flash[:alert]).to be

@@ -45,6 +45,22 @@ RSpec.describe GameQuestion, type: :model do
 
   # Группа тестов на помощь игроку
   context 'user helpers' do
+    # проверяем help_hash
+    it 'correct help_hash' do
+      # сначала убедимся, в подсказках пока пусто
+      expect(game_question.help_hash.empty?).to be_truthy
+
+      # добавим пару ключей
+      game_question.help_hash[:test_key1] = 'test1'
+      game_question.help_hash[:test_key2] = 'test2'
+
+      # сохраняем и проверяем
+      expect(game_question.save).to be_truthy
+
+      # проверяем хэш
+      expect(game_question.help_hash).to eq({test_key1: 'test1', test_key2: 'test2'})
+    end
+
     # проверяем работоспосбность "помощи зала"
     it 'correct audience_help' do
       # сначала убедимся, в подсказках пока нет нужного ключа
@@ -58,6 +74,31 @@ RSpec.describe GameQuestion, type: :model do
       # мы не можем знать распределение, но можем проверить хотя бы наличие нужных ключей
       ah = game_question.help_hash[:audience_help]
       expect(ah.keys).to contain_exactly('a', 'b', 'c', 'd')
+    end
+
+    # проверяем работоспособность "50/50"
+    it 'correct 50/50' do
+      expect(game_question.help_hash).not_to include(:fifty_fifty)
+
+      game_question.add_fifty_fifty
+
+      expect(game_question.help_hash).to include(:fifty_fifty)
+
+      ff = game_question.help_hash[:fifty_fifty]
+      expect(ff).to include('b')
+      expect(ff.size).to eq(2)
+    end
+
+    # проверяем работоспособность "звонок другу"
+    it 'correct friend_call' do
+      expect(game_question.help_hash).not_to include(:friend_call)
+
+      game_question.add_friend_call
+
+      expect(game_question.help_hash).to include(:friend_call)
+
+      fc = game_question.help_hash[:friend_call]
+      expect(fc).to include('считает, что это вариант')
     end
   end
 end
